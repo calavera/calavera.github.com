@@ -5,7 +5,7 @@ layout: post
 
 I think this story started the day that I discovered "hudson.rb":http://github.com/cowboyd/hudson.rb. "Charles":http://twitter.com/#!/cowboyd sent a tweet asking for people to help him to write Hudson plugins with JRuby. The idea was there but just a few weeks ago he started the "project":http://github.com/cowboyd/fog.hpi. Hudson's architecture was too hacky and seems that project ended with "Kohsuke's preliminary report":http://infradna.com/content/hudson-jruby-integration-preliminary-report.
 
-Then RubyConf X arrived and I had the pleasure to meet Charles among other fellow rubists. "Charlie":http://twitter.com/headius and "Tom":http://twitter.com/tom_enebo were at the stage when they show a "brief code":http://is.gd/gYCMr to write JRuby extensions with Mirah and the idea of write Hudson plugins with Mirah came to my mind, at the end, it compiles to JVM bytecode so we won't bump into all those problems that we had with JRuby.
+Then RubyConf X arrived and I had the pleasure to meet Charles among other fellow rubists. "Charlie":http://twitter.com/headius and "Tom":http://twitter.com/tom_enebo were at the stage when they show a "brief code":http://is.gd/gYCMr to write JRuby extensions with Mirah, and the idea of write Hudson plugins with Mirah came to my mind, at the end, it compiles to JVM bytecode so we won't bump into all those problems that we had with JRuby.
 
 This was the "first attempt":https://gist.github.com/674775, it didn't compile even, but I didn't give up, and after a couple of days of work I can say that *I can write Hudson plugins with Mirah!!*
 
