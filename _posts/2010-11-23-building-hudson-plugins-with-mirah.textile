@@ -1,0 +1,47 @@
+---
+title: Building Hudson plugins with Mirah, ROUND 1
+layout: post
+---
+
+I think this story started the day that I discovered "hudson.rb":http://github.com/cowboyd/hudson.rb. "Charles":http://twitter.com/#!/cowboyd sent a tweet asking for people to help him to write Hudson plugins with JRuby. The idea was there but just a few weeks ago he started the "project":http://github.com/cowboyd/fog.hpi. Hudson's architecture was too hacky and seems that project ended with "Kohsuke's preliminary report":http://infradna.com/content/hudson-jruby-integration-preliminary-report.
+
+Then RubyConf X arrived and I had the pleasure to meet Charles among other fellow rubists. "Charlie":http://twitter.com/headius and "Tom":http://twitter.com/tom_enebo were at the stage when they show a "brief code":http://is.gd/gYCMr to write JRuby extensions with Mirah and this idea came to my mind, why do we write Hudson extensions with "Mirah":http://mirah.org??!! At the end, it compiles to JVM bytecode so we won't bump into all those problems that we had with JRuby.
+
+This was the "first attempt":https://gist.github.com/674775, it didn't compile even, but I didn't give up, and after a couple of days of work I can say that *I can write Hudson plugins with Mirah!!*
+
+All my code is still quite experimental but I'd like to share with you the problems that I found, how I've solved them and what's next.
+
+We have two mayor problems right now. First, Hudson needs to compile java code, period. It adds some hooks to the java compiler to generate binary files for the extension points. Mirah can generate that java source for us, but we'll have to wait until "this patch":https://github.com/mirah/mirah/pull/31 will be applied.
+
+Second problem, Mirah doesn't support java generics and Hudson uses them all around. My plan is to create a project to write wrappers to that points where a generic is required, like I'm doing with this "build step descriptor":https://github.com/calavera/mirah.hpi/blob/master/src/main/java/org/mirah/BuilderStepDescriptor.java and extend the mirah classes from them.
+
+There are also other minor problems, like the fact that Mirah doesn't have a maven plugin yet and we have to use "the antrun plugin":https://github.com/calavera/mirah.hpi/blob/master/pom.xml#L36-56, and I'm pretty sure we'll find more soon but I think this is a good starting point.
+
+So, arrived at this poing the question is, *where is the code??!!*.
+
+I've created a repository in github with a Hello world builder plugin:
+
+"*http://github.com/calavera/mirah.hpi*":http://github.com/calavera/mirah.hpi
+
+And this is the Mirah code that you can find there:
+
+<script src="https://gist.github.com/712444.js"> </script>
+
+The build is still quite hacky and it needs few steps:
+
+  # Comment the antrun plugin into the pom.xml and execute @mvn compile@,
+    this will compile the mirah dependencies and wrappers.
+  # Uncomment the plugin and execute the same command again, this will
+    generate the java source code from Mirah and will compile it.
+  # Run @mvn hpi:run@ to load the hudson test instance.
+
+So, what's next? I have some ideas but any others are also welcome:
+
+  # Create a separate project for the wrappers for the java generics.
+  # Create a maven-mirah-plugin to be more maven friendly to generate the classes.
+  # Create a dsl to write views with erb rather than jelly.
+  # Try to Migrate my "Rake":https://github.com/hudson/rake-plugin and "RubyMetrics":https://github.com/hudson/rubymetrics-plugin plugins to mirah.
+
+Of course any contribution is always welcome and I have a completely open commit policy, if you ask for commit privileges you get them.
+
+Let's see what will come in the ROUND 2!!

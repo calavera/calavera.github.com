@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="utf-8" />
+   <title>{{ page.title }}</title>
+   <meta name="author" content="David Calavera" />
+   <link href="http://feeds.feedburner.com/thinkincode" rel="alternate" title="ThinkInCode" type="application/atom+xml" />
+
+   <!--syntax highlighting CSS-->
+   <link rel="stylesheet" href="/static/css/syntax.css" />
+
+   <!--Homepage CSS-->
+   <link rel="stylesheet" href="/static/css/screen.css" media="screen, projection" />
+</head>
+<body>
+
+<div class="site">
+  <nav>
+    <div class="title">
+      <a href="/">Think in code</a>
+    </div>
+  </nav>
+
+  {{ content }}
+
+  <footer>
+  <div class="footer">
+    <div class="contact">
+      <p>David Calavera</p>
+    </div>
+    <div class="contact">
+      <p><a href="http://github.com/calavera">github.com/calavera</a></p>
+    </div>
+    <div class="contact">
+      <p><a href="http://twitter.com/calavera">twitter.com/calavera</a></p>
+    </div>
+    <div class="rss">
+      <a href="http://feeds.feedburner.com/thinkincode">
+        <img src="/static/imgs/rss.png" alt="Subscribe to RSS Feed" />
+      </a>
+    </div>
+  </div>
+  </footer>
+</div>
+{% include analytics.html %}
+</body>
+</html>
