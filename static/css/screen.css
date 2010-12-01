@@ -100,7 +100,6 @@ ul.posts span {
    color: #c00;
    font-weight: bold;
    margin-bottom: 2em;
-   font-size:3em;
 }
 
 .site .title a {
@@ -112,14 +111,19 @@ ul.posts span {
    color: #06c;
 }
 
+.site .title a.home {
+   font-size:3em;
+}
+
 .site .title a.extra {
    color: #aaa;
    text-decoration: none;
    margin-left: 1em;
+   valign: top;
 }
 
 .site .title a.extra:hover {
-   color: black;
+   color: #06c;
 }
 
 .site .meta {
