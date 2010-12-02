@@ -1,0 +1,22 @@
+---
+title: Building Hudson plugins with Mirah, baby steps
+layout: post
+---
+
+This is the second post of a serie where I try to get the pieces to write Hudson's plugins with Mirah, you sould read the first one to know what's all about:
+
+"Building Hudson plugins with Mirah, ROUND 1":http://thinkincode.net/2010/11/23/building-hudson-plugins-with-mirah.html
+
+Before continuing with the plugin development we need a couple of pieces get together. In the previous post we show the development cycle was quite hacky and tedious. This is because Hudson is bonded to Maven and we still didn't have the right tools to integrate Mirah with Maven.
+
+This week, I wrote the "required descriptors":https://github.com/mirah/mirah/pull/33 to be able to release Mirah packages as Maven artifacts so we don't need the Mirah's source code anymore. Besides, I wrote a "maven plugin":https://github.com/calavera/maven-mirah-plugin that allows us to compile Mirah source code files in a more Maven friendly way. It's my first Maven plugin so it still lacks some compiler arguments and has some bugs to solve because the dependencies resolution, any help here would be really appreciated by the way.
+
+So, where before we needed Mirah and JRuby packages installed and we handled the compilation by hand, now we just need to add this plugin to our maven descriptor:
+
+<script src="https://gist.github.com/726322.js"> </script>
+
+And we can use maven as we used when we worked writing plugins with plain java, executing @mvn compile hpi:run@.
+
+Now that we've reduced our development cycle we can get back with the plugins and their integration issues. First step, avoid the cross source compilation and get Hudson works with classes compiled directly from Mirah.
+
+If you want to take a look at the complete code you can find it in my "Github repository":http://github.com/calavera/mirah.hpi.
