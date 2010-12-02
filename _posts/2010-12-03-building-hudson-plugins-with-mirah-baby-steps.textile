@@ -15,7 +15,7 @@ So, where before we needed Mirah and JRuby packages installed and we handled the
 
 <script src="https://gist.github.com/726322.js"> </script>
 
-And we can use maven as we used when we worked writing plugins with plain java, executing @mvn compile hpi:run@.
+And we can use maven as we used when we worked writing plugins with plain java, just executing @mvn compile hpi:run@.
 
 Now that we've reduced our development cycle we can get back with the plugins and their integration issues. First step, avoid the cross source compilation and get Hudson works with classes compiled directly from Mirah.
 
