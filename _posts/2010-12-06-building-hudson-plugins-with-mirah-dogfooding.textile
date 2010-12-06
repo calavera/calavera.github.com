@@ -1,0 +1,26 @@
+---
+title: Building Hudson plugins with Mirah, dogfooding
+layout: post
+---
+
+This is the third post of a serie where I try to get the pieces to write Hudson's plugins with Mirah, you sould read the previous ones to know what's all about:
+
+"Building Hudson plugins with Mirah, ROUND 1":http://thinkincode.net/2010/11/23/building-hudson-plugins-with-mirah.html
+"Building Hudson plugins with Mirah, baby steps":http://thinkincode.net/2010/12/03/building-hudson-plugins-with-mirah-baby-steps.html
+
+Now it seems we have most of the pieces together, and although we still need to find out a solution for the integration problems that we've already talked about, I'd like to see my first plugin working.
+
+My first idea was to rewrite one of my plugins but I think we should start with something easier first. All in all Mirah is a scripting language, so why don't we write a Hudson's plugin to execute Mirah scripts?
+
+We need to modify our previous example to extend from the CommandInterpreter class and add the configuration fields that we want to store to the constructor. Besides, I've found that Mirah's arrays transformation is quite hacky and perhaps needs a review, we need "some lines of code":https://github.com/calavera/mirah.hpi/blob/master/src/main/mirah/mirah_command_interpreter.mirah#L25-29 to get a java array from a mirah array(Mirah internally uses java lists to store arrays) and that could be easily solved if mirah supported generics or processed the type of elements which arrays contain.
+
+<script src="https://gist.github.com/730210.js"></script>
+<noscript><div><a href="https://gist.github.com/730210">https://gist.github.com/730210</a></div></noscript>
+
+Once we've modifed that and we add the required views, we can see our fields into the job's configuration screen:
+<img src="http://img.skitch.com/20101206-rxy6qbjftyh5qphudg3nykx7ti.jpg" alt="mirah script Config [Hudson]" />
+
+And if we execute the job we'll get our script running:
+<img src="http://img.skitch.com/20101206-1d759nc8qdw2wqsjth48x94n46.jpg" alt="hudson_mirah_output" />
+
+So we've completed our first plugin. The complete source code is as usual into "its github repository":https://github.com/calavera/mirah.hpi, where the hudson wrappers project also got "its own repository":https://github.com/calavera/hudson-mirah-wrappers.
