@@ -26,6 +26,6 @@ Now we just need to write this:
 <script src="https://gist.github.com/733238.js"></script>
 <noscript><div><a href="https://gist.github.com/733238">https://gist.github.com/733238</a></div></noscript>
 
-I think this new sintax if quite more confortable and easy to remember, at least to me.
+I think this new sintax is quite more confortable and easy to remember, at least to me.
 
 Now the hard work is to complete the dsl as much as possible, as usual and following my no restrictions policy, if you want to contribute to this project just let me know and I'll be more than happy to give you commit privileges.
