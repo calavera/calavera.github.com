@@ -1,0 +1,31 @@
+---
+title: Writing Hudson views with Ruby and ERB
+layout: post
+---
+
+If you've never heard about something called Jelly it's the templates engine that "Hudson":http://hudson-ci.org and "Stapler":https://stapler.dev.java.net, its web framework, use. It's based in xml and from my point of view it's quite hard to use. Perhaps it's just me, but seriously, I never remember all the namespaces that a view needs by default, and it goes worse when the view is quite complicated.
+
+Perhaps we can't get rid of jelly completely, but we can add a thin layer on top of it to write something more friendly. "Hudson-ERB":http://github.com/calavera/hudson-erb-plugin is a new open source project that aims to replace all those ugly jelly templates with a nice and useful ruby DSL.
+
+The project is divided in two parts, the first one is the "dsl itself":https://github.com/calavera/hudson-erb-plugin/tree/master/lib/hudson_erb, we'll talk later about it, and the second part is a "maven plugin":https://github.com/calavera/hudson-erb-plugin/blob/master/src/main/java/hudson/plugins/erb/ErbCompilerMojo.java that processes the new ruby templates and generates the jelly templates that Hudson needs just before the plugin is packed, so we can still use our default cycle to develop Hudson plugins with maven, running @mvn compile hpi:run@.
+
+To use the plugin we just need to add it to our pom descriptor:
+
+<script src="https://gist.github.com/733213.js"></script>
+<noscript><div><a href="https://gist.github.com/733213">https://gist.github.com/733213</a></div></noscript>
+
+Then we can start writing our templates with ruby. The plugin follows the same conventions that Hudson uses with its views but using ERB files, so if we need a file called @config.jelly@ under the plugin directory we can replace it with a file called @config.jelly.erb@ under the same directory, and the plugin will generate the jelly file when we'll need it.
+
+Of course, this project is not mature yet, actually I started it yesterday, and the dsl still misses most of the tags that jelly contains, but we already can write simple forms with a small subset of those tags. Where we needed to write something like this with jelly:
+
+<script src="https://gist.github.com/733233.js"></script>
+<noscript><div><a href="https://gist.github.com/733233">https://gist.github.com/733233</a></div></noscript>
+
+Now we just need to write this:
+
+<script src="https://gist.github.com/733238.js"></script>
+<noscript><div><a href="https://gist.github.com/733238">https://gist.github.com/733238</a></div></noscript>
+
+I think this new sintax if quite more confortable and easy to remember, at least to me.
+
+Now the hard work is to complete the dsl as much as possible, as usual and following my no restrictions policy, if you want to contribute to this project just let me know and I'll be more than happy to give you commit privileges.
