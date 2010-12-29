@@ -1,0 +1,103 @@
+---
+title: JRuby `to_java` by example
+layout: post
+---
+
+One of the JRuby killer features is that we can use Java classes into our Ruby code as they were Ruby classes. This is the foundation for hundred of projects, take your favourite Java library and create a layer to do it more Ruby friendly, Trinidad's core is completely written in Ruby thanks to this, for example.
+
+JRuby is smart enough to know when we are using a Java class and it converts the call arguments from Ruby to Java objects. But there is always a recurrent question when we work with the Java integration layer, how can we convert a Ruby array to a Java array when it contains other arrays?
+
+Let's say we have a Java class called @Foo@ with a method @bar@ that takes a string as an argument:
+
+<script src="https://gist.github.com/758429.js?file=gistfile1.java"></script>
+<noscript>
+<pre><code>
+public class Foo {
+    public void bar(String baz) {}
+}
+</code></pre>
+</noscript>
+
+JRuby knows how to convert a Ruby string to a Java string, so the code to call this method is pretty straightforward:
+
+<script src="https://gist.github.com/758429.js?file=gistfile2.rb"></script>
+<noscript>
+<pre><code>
+Foo.new.bar 'hello'
+</code></pre>
+</noscript>
+
+Now, let's say this same method takes an array of string as an argument:
+
+<script src="https://gist.github.com/758429.js?file=gistfile3.java"></script>
+<noscript>
+<pre><code>
+public class Foo {
+    public void bar(String[] baz) {}
+}
+</code></pre>
+</noscript>
+
+Here the code to call it starts to be tricky. We need to use the method @to_java@ to convert our Ruby array, mostly because we don't know what's inside the array, there are several performance implications to know it so we prefer to do it explicit:
+
+<script src="https://gist.github.com/758429.js?file=gistfile4.rb"></script>
+<noscript>
+<pre><code>
+Foo.new.bar ['hello'].to_java
+</code></pre>
+</noscript>
+
+This method can take an optional argument, this is the type of the objects inside the array and by default is @:string@. Here comes the key to understand how to use this method properly in any case, when we pass a symbol as argument we are passing an alias for a Java class name, but this method also accepts Java class names directly, so these calls are equivalent:
+
+<script src="https://gist.github.com/758429.js?file=gistfile5.rb"></script>
+<noscript>
+<pre><code>
+Foo.new.bar ['hello'].to_java
+Foo.new.bar ['hello'].to_java(:string)
+Foo.new.bar ['hello'].to_java(java.lang.String)
+</code></pre>
+</noscript>
+
+So now, let's say our example method takes an array of string arrays as an argument:
+
+<script src="https://gist.github.com/758429.js?file=gistfile6.java"></script>
+<noscript>
+<pre><code>
+public class Foo {
+    public void bar(String[][] baz) {}
+}
+</code></pre>
+</noscript>
+
+In this case we'll need to use the Java class name directly, as easy as this:
+
+<script src="https://gist.github.com/758429.js?file=gistfile7.rb"></script>
+<noscript>
+<pre><code>
+Foo.new.bar [['hello']].to_java(java.lang.String[])
+</code></pre>
+</noscript>
+
+Knowing this we can work with any array of Java objects but primitives. The syntax for these types is slightly different since they don't match any Java class name, we'll need to use @Java@ as package name followed by the name of the primitive type itself.
+
+Let's say our @bar@ method takes now an array of boolean arrays as an argument:
+
+<script src="https://gist.github.com/758429.js?file=gistfile8.java"></script>
+<noscript>
+<pre><code>
+public class Foo {
+    public void bar(boolean[][] baz) {}
+}
+</code></pre>
+</noscript>
+
+The code to call this method will be:
+
+<script src="https://gist.github.com/758429.js?file=gistfile9.rb"></script>
+<noscript>
+<pre><code>
+Foo.new.bar [[true false]].to_java(Java::boolean[])
+</code></pre>
+</noscript>
+
+Finally, as a complete example guide what else but our own tests, the "JRuby's java_integration specs":https://github.com/jruby/jruby/tree/master/spec/java_integration/types are plenty of useful ones, I recommend you the "array":https://github.com/jruby/jruby/blob/master/spec/java_integration/types/array_spec.rb the "construction":https://github.com/jruby/jruby/blob/master/spec/java_integration/types/construction_spec.rb specs.
