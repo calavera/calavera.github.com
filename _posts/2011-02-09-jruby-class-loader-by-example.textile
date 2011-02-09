@@ -1,0 +1,84 @@
+---
+title: JRuby class loader by example
+layout: post
+---
+
+Everybody knows that JRuby lets us to load java jar files using @require@,
+but it seems that just a few people know that there are two other methods to
+do it and how they work under the hood. Our new and shiny "wiki page":https://github.com/jruby/jruby/wiki/CallingJavaFromJRuby includes a couple of examples but let me go further anyway.
+
+As I said, the first method to load java classes into our ruby application is @require@. It works like it does with any ruby file but with jar files, so if we invoke a code like this we'll end up with a bunch of java classes loaded:
+
+<script src="https://gist.github.com/819148.js?file=1.rb"></script>
+<noscript>
+<pre><code>
+require 'java'
+require 'hello_world.jar'
+</code></pre>
+</noscript>
+
+
+This method, just lets us to load jar files, it doesn't work with java class directories, though.
+
+The second strategy to load java classes is using the variable @$CLASSPATH@. It behaves exactly like @$LOADPATH@ so we can append or remove paths from the list. The advantage of this strategy is that it also allows to load directories that contain java classes, so these calls are completely valid:
+
+<script src="https://gist.github.com/819148.js?file=2.rb"></script>
+<noscript>
+<pre><code>
+require 'java'
+$CLASSPATH << 'hello_world.jar'
+$CLASSPATH << 'hello_world_directory'
+</core></pre>
+</noscript>
+
+
+If we wanted to digg into both methods, @require@ and @$CLASSPATH@, we'll find out that at the end when we use @require@ we are actually adding our library to the @$CLASSPATH@:
+
+<script src="https://gist.github.com/819148.js?file=3.rb"></script>
+<noscript>
+<pre><code>
+$ irb
+jruby-1.6.0.RC2 :001 > require 'java'
+ => true
+jruby-1.6.0.RC2 :002 > require '/Users/david/dev/jruby/lib/jruby.jar'
+ => true
+jruby-1.6.0.RC2 :003 > $CLASSPATH
+ => ["file:/Users/david/dev/jruby/lib/jruby.jar"]
+</code></pre>
+</noscript>
+
+
+The third method is for sure the most unknown but it's actually where everything ends. When we use JRuby one of the constants that we have accessible is @JRuby@. This constant, among other things, lets us to reach the runtime itself with @JRuby.runtime@ and from here we also have available the java class loader that JRuby uses, @JRuby.runtime.jruby_class_loader@.
+
+The JRuby class loader also lets us to load jar files and class directories but it's a little bit harder to do it:
+
+<script src="https://gist.github.com/819148.js?file=4.rb"></script>
+<noscript>
+<pre><code>
+require 'java'
+JRuby.runtime.jruby_class_loader.add_url(java.io.File.new('hello_world_directory').to_url)
+JRuby.runtime.jruby_class_loader.add_url(java.io.File.new('hello_world.jar').to_url)
+</code></pre>
+</noscript>
+
+
+If this time we take a look at the "JRuby source code itself":https://github.com/jruby/jruby/blob/master/src/org/jruby/RubyClassPathVariable.java#L54-64, we'll discover that when we append something to the @$CLASSPATH@ variable we are actually adding it to the JRuby class loader:
+
+<script src="https://gist.github.com/819148.js?file=5.java"></script>
+<noscript>
+<pre><code>
+@JRubyMethod(name = {"append", "<<"}, required = 1)
+public IRubyObject append(IRubyObject obj) {
+    String ss = obj.convertToString().toString();
+    try {
+        URL url = getURL(ss);
+        getRuntime().getJRubyClassLoader().addURL(url);
+    } catch (MalformedURLException mue) {
+        throw getRuntime().newArgumentError(mue.getLocalizedMessage());
+    }
+    return this;
+}
+</code></pre>
+</noscript>
+
+So now, the question is which one we have to use. For the day to day the best option is @require@. Most of the java code we are going to deal with is packed as jar files, and it has a syntax well known. If we need to work with class directories too or we have any other special case, probably our best option is @$CLASSPATH@. It gives us what we need, we don't have to deal with urls and java idioms, and it's still a syntax that we know. And finally, I'd leave the third option for cases when we need to work with the class loader explicitily. For instance, I use this option in Trinidad because each one of the deployed applications can include their own jar files, so this option lets me create new class loaders for each application and ensure they are completely isolated.
