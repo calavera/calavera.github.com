@@ -3,9 +3,7 @@ title: JRuby class loader by example
 layout: post
 ---
 
-Everybody knows that JRuby lets us to load java jar files using @require@,
-but it seems that just a few people know that there are two other methods to
-do it and how they work under the hood. Our new and shiny "wiki page":https://github.com/jruby/jruby/wiki/CallingJavaFromJRuby includes a couple of examples but let me go further anyway.
+Everybody knows that JRuby lets us to load java jar files using @require@, but it seems that just a few people know that there are two other methods to do it and how they work under the hood. Our new and shiny "wiki page":https://github.com/jruby/jruby/wiki/CallingJavaFromJRuby includes a couple of examples but let me go further anyway.
 
 As I said, the first method to load java classes into our ruby application is @require@. It works like it does with any ruby file but with jar files, so if we invoke a code like this we'll end up with a bunch of java classes loaded:
 
