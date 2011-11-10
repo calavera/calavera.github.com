@@ -1,0 +1,26 @@
+---
+title: MVC is not only for web applications
+layout: post
+---
+
+*TL;DR*
+
+Architecture matters, not only for web applications
+
+- - -
+
+I don't consider myself a design patterns expert nor a software architect. But, as a developer that likes to have his code organized, I find very annoying that people only care about software architecture when work on web applications.
+
+From "Wikipedia":http://en.wikipedia.org/wiki/Model-view-controller:
+
+bq. Model–view–controller (MVC) is a software architecture, currently considered an architectural pattern used in software engineering. The pattern isolates "domain logic" (the application logic for the user) from the user interface (input and presentation), permitting independent development, testing and maintenance of each (separation of concerns).
+
+As we can see, there is no mention here to a browser nor a window, it only says @user interface@. And, as far as I know, the terminal is also a user interface. It gets our input and presents the output of the program that we executed. So, my question here is, why does nobody use the mvc pattern to write CLI applications?
+
+I started to dig into three well know CLIs for Cloud providers, "Engine Yard":http://github.com/engineyard/engineyard, "Heroku":http://github.com/heroku/heroku and "Cloud Foundry":http://github.com/cloudfoundry/vmc, and from my point of view, none of them is well structured. In the worst case we can find classes with hundred of lines of code that basically do everything.
+
+This idea came to my mind when I was about to add some new capabilities to Engine Yard's CLI. How could a CLI application look like if I follow the mvc pattern? Everybody knows the adventages of this pattern. I'll get more issolated code that it will be easier to test, and since everybody knows the pattern, anyone can contribute to the project easily.
+
+h2. Introducing ey_cli
+
+So, instead of adding these new capabilities to the existent project, I started to write my own CLI following this convention, "ey_cli":http://github.com/calavera/ey_cli is the result of that experiment. It's a CLI application for Engine Yard that tries to follow the MVC pattern. It's far from being perfect and complete, but if you check the source code out, you'll probably understand quite easily what each class is used for and how the application dispatches the user requests.
