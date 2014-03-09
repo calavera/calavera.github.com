@@ -144,13 +144,15 @@ ul.posts span {
 }
 
 .site footer .rss {
-   margin-top: 1.1em;
+   margin-top: .9em;
    margin-right: -.2em;
    float: right;
 }
 
 .site footer .rss img {
-   border: 0;
+  width: 20px;
+  padding-right: 10px;
+  border: 0;
 }
 
 #post pre {
