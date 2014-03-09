@@ -122,6 +122,10 @@ ul.posts span {
    valign: top;
 }
 
+.site .title a.extra:hover {
+  color: #6a9fb5;
+}
+
 .site .meta {
    color: #aaa;
 }
