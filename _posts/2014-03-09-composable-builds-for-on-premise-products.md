@@ -49,7 +49,10 @@ end
 
 class SetupStorage
   def run(payload)
-    payload['storage'] = Fog::Storage.new(...)
+    storage = Fog::Storage.new(...)
+    
+    payload['storage'] = storage
+    payload['storage_directory'] = storage.directory("enterprise")
   end
 end
 ```
@@ -77,11 +80,11 @@ class UploadGhp
   def run(payload)
     version = payload['version']
     
-    file = payload['storage'].files.create \
+    file = payload['storage_directory'].files.create \
       key: "github-enterprise-#{version}",
       body: File.open(payload['ghp_path'])
     
-    notify "Package #{version} uploaded to #{file.public_url}
+    notify "Package #{version} uploaded to #{file.public_url}"
   end
 end
 ```
