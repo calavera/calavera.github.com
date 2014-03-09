@@ -1,6 +1,7 @@
 body {
   font-family: "Lucida Grande", Verdana, Sans-serif; 
   text-align: center;
+  color: #454441;
 }
 
 h1 {
@@ -13,7 +14,6 @@ h1 {
 p {
   font-size:1em;
   line-height:1.4em;
-  color:#777;
 }
 
 a {
