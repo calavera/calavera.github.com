@@ -27,9 +27,9 @@ Internally, we normalize each flag name to always use underscores rather than da
 
 There was only one problem with managing keys and values in the payload. We couldn't guarantee that the payload contained everything a conduit needed to run once. Especially, because some conduits required information only provided by other conduits.
 
-We added some sanity checks to the pipelines. Before running, they gathered information about each conduit and decided what to do. At the same time, each conduit needs to specify their expectations. They also need to specify the information they provide to future conduits.
+We added some sanity checks to the pipelines. Before running, they gather information about each conduit and decide what to do. At the same time, each conduit needs to specify their expectations. They also need to specify the information they provide to future conduits.
 
-Following the previous example, this is how the conduit to build the github package looks like:
+Following the previous example, this is what the conduit that builds the github package looks like:
 
 {% highlight ruby %}
 class BuildGitHubDeb
@@ -44,7 +44,7 @@ class BuildGitHubDeb
 end
 {% endhighlight %}
 
-A pipeline that uses that conduit checks the expectations for each conduit in order. It doesn't start if it recognizes that there will be missing keys in the payload.  The sanity check adds the keys marked as "provides" to the verification for future conduits, and so on.
+A pipeline checks the expectations for each conduit in order. It doesn't start if it recognizes that there will be missing keys in the payload. The sanity check adds the keys marked as `provides` to the payload for future verifications, and so on.
 
 Let's see this with an example. Giving this pipeline:
 
@@ -55,7 +55,7 @@ EnterpriseBuild = Pipeline[
 ]
 {% endhighlight %}
 
-The BuildGhp conduit could look like this:
+The `BuildGhp` conduit could look like this:
 
 {% highlight ruby %}
 class BuildGhp
@@ -69,9 +69,9 @@ class BuildGhp
 end
 {% endhighlight %}
 
-Before the `EnterpriseBuild` starts it runs the sanity check. When it arrives to the `BuildGhp`, it detects that BuildGitHubDeb provides `github_deb`. It also expects `gist_deb`, but nobody provides it. In that case, the pipeline notifies that there is a missing expectation and doesn't start the build.
+Before the `EnterpriseBuild` starts, it runs the sanity check. When it arrives to the `BuildGhp`, it detects that BuildGitHubDeb provides `github_deb`. It also expects `gist_deb`, but nobody provides it. In that case, the pipeline sends a notification that there is a missing expectation, and therefore doesn't start the build.
 
-We use RSpec in this project for unit testing. We have custom rspec expectations for these sanity checks. This way we don't need to run a pipeline, we can do unit test on it. A test to verify that a pipeline is correct looks like this:
+We use RSpec in this project for unit testing. We have custom rspec expectations for these sanity checks. This way, we don't need to run a pipeline in production. We can write unit tests for it. A test to verify that a pipeline is correct looks like this:
 
 {% highlight ruby %}
 describe EnterpriseBuild do
@@ -79,8 +79,8 @@ describe EnterpriseBuild do
 end
 {% endhighlight %}
 
-That runs the sanity check to verify that the pipeline is correct when the initial payload only contains the key `version`.
+That runs the sanity check to verify that the pipeline is correct when the initial payload only contains the key `version.`
 
-Using this simple api we provide fast fails and improve our feedback loop. We don't need to wait several minutes to realize that something is not going to work as we expect when we run a command in production.
+Using this simple api, we provide fast fails and improve our feedback loop. We don't need to wait several minutes to realize that something is not going to work, as we expect when we run a command in production.
 
-I'll explain how we make all this fast in my next blog post.
+I'll explain how we make all this faster in my next blog post.
