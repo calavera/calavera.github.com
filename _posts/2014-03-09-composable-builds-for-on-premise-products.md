@@ -32,7 +32,7 @@ The first thing we did was to separate every one of those steps into smaller mea
 ```ruby
 class BuildGitHubDeb
   def run(payload)
-    # call brew2deb in here
+    # call brew2deb to generate a debian package
     payload['github_deb'] = debian_path
   end
 end
@@ -62,6 +62,7 @@ class BuildGhp
      debs = payload.each_with_object([]) do |(k, v), debs|
        debs << v if k =~ /_deb$/
      end
+     # call tar with all the deb paths
   end
 end
 ```
