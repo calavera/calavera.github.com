@@ -9,11 +9,15 @@ When I joined GitHub two years ago, the Enterprise builds consisted of two scrip
 
 The basic command that we use to build packages looks like this:
 
-`hubot build ghp VERSION`
+{% highlight %}
+hubot build ghp VERSION
+{% endhighlight %}
 
 This sent a request to the server to run the build script for the package. That command also accepted several flags to build packages for topic branches. More often than not, we ended up running something like this:
 
-`hubot build ghp VERSION --github-branch TOPIC --cookbooks-branch TOPIC --gist-branch TOPIC...`
+{% highlight %}
+hubot build ghp VERSION --github-branch TOPIC --cookbooks-branch TOPIC --gist-branch TOPIC...`
+{% endhighlight %}
 
 Underneath, the script was responsible for several things:
 
@@ -30,18 +34,18 @@ Enter composable builds.
 
 The first thing we did was to separate every one of those steps into smaller meaningful pieces. We followed a pretty common pattern: the middleware pattern. We called each one of those pieces "Conduit." For instance, the step to build a debian package looks like this:
 
-```ruby
+{% highlight ruby %}
 class BuildGitHubDeb
   def run(payload)
     # call brew2deb to generate a debian package
     payload['github_deb'] = debian_path
   end
 end
-```
+{% endhighlight %}
 
 And the steps to configure our cloud service looks like this:
 
-```ruby
+{% highlight ruby %}
 class SetupCompute
   def run(payload)
     payload['compute'] = Fog::Compute.new(...)
@@ -56,13 +60,13 @@ class SetupStorage
     payload['storage_directory'] = storage.directory("enterprise")
   end
 end
-```
+{% endhighlight %}
 
 As you might have guessed already, every conduit shares that `payload` argument.
 
 The conduit that packs the debian files into the tarball looks like this:
 
-```ruby
+{% highlight ruby %}
 class BuildGhp
   def run(payload)
      debs = payload.each_with_object([]) do |(k, v), debs|
@@ -72,11 +76,11 @@ class BuildGhp
      payload['ghp_path'] = tar_path
   end
 end
-```
+{% endhighlight %}
 
 And the conduit that uploads the tarball to our internal storage looks like this:
 
-```ruby
+{% highlight ruby %}
 class UploadGhp
   def run(payload)
     version = payload['version']
@@ -88,11 +92,11 @@ class UploadGhp
     notify "Package #{version} uploaded to #{file.public_url}"
   end
 end
-```
+{% endhighlight %}
 
 We compose what we call a `Pipeline` by putting together several of these conduits:
 
-```ruby
+{% highlight ruby %}
 BuildEnterprisePackage = Pipeline[
    SetupCompute,
    SetupStorage,
@@ -102,7 +106,7 @@ BuildEnterprisePackage = Pipeline[
    BuildGhp,
    UploadGhp
 ]
-```
+{% endhighlight %}
 
 By completely separating each concern, we got more simple snippets of code. Now, we can reuse them to extend our tools beyond the two initial scripts we had with every piece coupled. What started as a replacement for two hubot commands is now a complex tool that handles 40 different commands.
 
