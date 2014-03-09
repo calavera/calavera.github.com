@@ -103,12 +103,8 @@ ul.posts span {
 }
 
 .site .title a {
-   color: #c00;
+   color: #454441;
    text-decoration: none;
-}
-
-.site .title a:hover {
-   color: #06c;
 }
 
 .site .title a.home {
