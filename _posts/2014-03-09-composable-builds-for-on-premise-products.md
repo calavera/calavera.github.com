@@ -89,7 +89,7 @@ class UploadGhp
 end
 ```
 
-We compose what we call `Pipeline` putting together several of these conduits:
+We compose what we call a `Pipeline` by putting together several of these conduits:
 
 ```ruby
 BuildEnterprisePackage = Pipeline[
@@ -102,3 +102,7 @@ BuildEnterprisePackage = Pipeline[
    UploadGhp
 ]
 ```
+
+By separating each concern completely we got way more simple snippets of code. Now, we can reuse them to extend our tools beyond the two initial scripts we had with everything coupled.
+
+In the next post I'll explain how we handle the expectations for each conduit and the flags that we provide via our chat clients.
