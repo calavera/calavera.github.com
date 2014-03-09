@@ -1,7 +1,6 @@
 ---
 title: Composable builds for on-premise products
 layout: post
-published: false
 ---
 
 I've been invited to talk about how we handle builds for GitHub Enterprise at the next [RubyConf Philippines](http://rubyconf.ph/). I thought that, in preparation for my talk, it would be also a good idea to write about those topics here.
