@@ -161,15 +161,22 @@ ul.posts span {
    padding: 0 .4em;
 }
 
+#post .highlight pre {
+  background-color: #f9f9f9;
+}
+
 #post ul, #post ol {
    margin-left: 1.25em;
 }
 
 #post code {
    border: 1px solid #ddd;
-   background-color: #eef;
    font-size: 95%;
    padding: 0 .2em;
+}
+
+#post p code {
+  padding: 2px 4px;
 }
 
 #post pre code {

@@ -9,13 +9,13 @@ When I joined GitHub two years ago, the Enterprise builds consisted of two scrip
 
 The basic command that we use to build packages looks like this:
 
-{% highlight %}
+{% highlight bash %}
 hubot build ghp VERSION
 {% endhighlight %}
 
 This sent a request to the server to run the build script for the package. That command also accepted several flags to build packages for topic branches. More often than not, we ended up running something like this:
 
-{% highlight %}
+{% highlight bash %}
 hubot build ghp VERSION --github-branch TOPIC --cookbooks-branch TOPIC --gist-branch TOPIC...`
 {% endhighlight %}
 
