@@ -10,11 +10,11 @@ The Enterprise builds consisted on two scripts, when I joined GitHub two years a
 
 The basic command that we use to build packages looks like this:
 
-"hubot build ghp VERSION".
+`hubot build ghp VERSION`
 
 This sent a request to the server to run the build script for the package. That command also accepted several flags to build packages for topic branches. More often than not we ended up running something like this:
 
-"hubot build ghp VERSION --github-branch TOPIC --cookbooks-branch TOPIC --gist-branch TOPIC..."
+`hubot build ghp VERSION --github-branch TOPIC --cookbooks-branch TOPIC --gist-branch TOPIC...`
 
 Underneath, the script was responsible of several things:
 
@@ -30,9 +30,10 @@ As you can imagine, those are a lot of responsibilities for a single script. We 
 The first thing we did was to separate every one of those steps into smaller meaningful pieces. We followed a pretty common pattern, the middleware pattern. We called each one of those pieces "Conduit". For instance, the step to build a debian package looked like this:
 
 ```ruby
-class BuildDeb
+class BuildGitHubDeb
   def run(payload)
     # call brew2deb in here
+    payload['github_deb'] = debian_path
   end
 end
 ```
@@ -42,13 +43,39 @@ And the steps to configure our cloud service looked like this:
 ```ruby
 class SetupCompute
   def run(payload)
-    payload[:compute] = Fog::Compute.new(...)
+    payload['compute'] = Fog::Compute.new(...)
   end
 end
 
 class SetupStorage
   def run(payload)
-    payload[:storage] = Fog::Storage.new(...)
+    payload['storage'] = Fog::Storage.new(...)
   end
 end
+```
+
+As you might have guessed already, every conduit shares that `payload` argument. So, the final conduit that packs the debian files into the tarball looks like this:
+
+```ruby
+class BuildGhp
+  def run(payload)
+     debs = payload.each_with_object([]) do |(k, v), debs|
+       debs << v if k =~ /_deb$/
+     end
+  end
+end
+```
+
+We compose what we call `Pipeline` putting together several of these conduits:
+
+```ruby
+BuildEnterprisePackage = Pipeline[
+   SetupCompute,
+   SetupStorage,
+   ...
+   BuildGitHubDeb,
+   ...
+   BuildGhp,
+   NotifyCampfire
+]
 ```
