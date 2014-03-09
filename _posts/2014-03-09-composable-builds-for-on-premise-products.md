@@ -54,7 +54,9 @@ class SetupStorage
 end
 ```
 
-As you might have guessed already, every conduit shares that `payload` argument. So, the final conduit that packs the debian files into the tarball looks like this:
+As you might have guessed already, every conduit shares that `payload` argument.
+
+The conduit that packs the debian files into the tarball looks like this:
 
 ```ruby
 class BuildGhp
@@ -63,6 +65,23 @@ class BuildGhp
        debs << v if k =~ /_deb$/
      end
      # call tar with all the deb paths
+     payload['ghp_path'] = tar_path
+  end
+end
+```
+
+And the conduit that uploads the tarball to our internal storage looks like this:
+
+```ruby
+class UploadGhp
+  def run(payload)
+    version = payload['version']
+    
+    file = payload['storage'].files.create \
+      key: "github-enterprise-#{version}",
+      body: File.open(payload['ghp_path'])
+    
+    notify "Package #{version} uploaded to #{file.public_url}
   end
 end
 ```
@@ -77,6 +96,6 @@ BuildEnterprisePackage = Pipeline[
    BuildGitHubDeb,
    ...
    BuildGhp,
-   NotifyCampfire
+   UploadGhp
 ]
 ```
