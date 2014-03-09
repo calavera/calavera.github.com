@@ -4,7 +4,7 @@ layout: post
 published: false
 ---
 
-In my [previous blog post](http://calavera.github.io/2014/03/09/composable-builds-for-on-premise-products.html) I revealed how we separated two monolithic scripts into small reusable pieces. In this one, I'll explain how we handle the expectations for each one of them.
+In my [previous blog post](http://calavera.github.io/2014/03/09/composable-builds-for-on-premise-products.html), I revealed how we separated two monolithic scripts into small reusable pieces. In this one, I'll explain how we handle the expectations for each one of them.
 
 Like you probably remember, we call the pipelines via hubot. A normal call looks like this:
 
@@ -25,7 +25,7 @@ end
 
 Internally, we normalize each flag name to always use underscores rather than dashes. That way, the behavior is predictable. You always get flag values from the payload using underscores.
 
-There was only one problem managing keys and values in the payload. We couldn't guarantee that the payload contained everything a conduit needed to run until it was executed. Specially, because a conduit could provide information that future conduits required.
+There was only one problem with managing keys and values in the payload. We couldn't guarantee that the payload contained everything a conduit needed to run once. Especially, because some conduits required information only provided by other conduits.
 
 We added some sanity checks to the pipelines. Before running, they gathered information about each conduit and decided what to do. At the same time, each conduit needs to specify their expectations. They also need to specify the information they provide to future conduits.
 
