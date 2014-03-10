@@ -74,7 +74,22 @@ end
 
 Before the `EnterpriseBuild` starts, it runs the sanity check. When it arrives to the `BuildGhp`, it detects that BuildGitHubDeb provides `github_deb`. It also expects `gist_deb`, but nobody provides it. In that case, the pipeline sends a notification that there is a missing expectation, and therefore doesn't start the build.
 
-We use RSpec in this project for unit testing. We have custom rspec expectations for these sanity checks. This way, we don't need to run a pipeline in production. We can write unit tests for it. A test to verify that a pipeline is correct looks like this:
+This is what the code that does all these sanity checks looks like:
+
+{% highlight ruby %}
+def validate(present = [])
+  errors = []
+
+  @conduits.each_with_object(present) do |klass, supplied|
+    errors.push(*klass.validate(supplied))
+    supplied.push(*klass.supplied)
+  end
+
+  errors
+end
+{% endhighlight %}
+
+I'm pretty sure if you've read until here you're already wondering about testing. We use RSpec in this project for unit testing. We have custom rspec expectations for these sanity checks. This way, we don't need to run a pipeline in production. We can write unit tests for it. A test to verify that a pipeline is correct looks like this:
 
 {% highlight ruby %}
 describe EnterpriseBuild do
