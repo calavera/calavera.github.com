@@ -38,10 +38,13 @@ class BuildGitHubDeb
   provides 'github_deb'
 
   def run(payload)
-    ...
+    branch = payload['github_branch']
+    payload['github_deb'] = build_deb('github', branch)
   end
 end
 {% endhighlight %}
+
+We can set a default in the expectation to avoid hardcoding values inside the execution call.
 
 A pipeline checks the expectations for each conduit in order. It doesn't start if it recognizes that there will be missing keys in the payload. The sanity check adds the keys marked as `provides` to the payload for future verifications, and so on.
 
