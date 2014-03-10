@@ -60,10 +60,11 @@ The `BuildGhp` conduit could look like this:
 class BuildGhp
   expects 'github_deb'
   expects 'gist_deb'
-  
+
   provides 'ghp_path'
 
   def run(payload)
+    ...
   end
 end
 {% endhighlight %}
