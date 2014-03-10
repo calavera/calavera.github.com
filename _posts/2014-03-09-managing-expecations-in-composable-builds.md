@@ -1,7 +1,6 @@
 ---
 title: Managing expectations in composable builds
 layout: post
-published: false
 ---
 
 In my [previous blog post](http://calavera.github.io/2014/03/09/composable-builds-for-on-premise-products.html), I revealed how we separated two monolithic scripts into small reusable pieces. In this one, I'll explain how we handle the expectations for each one of them.
